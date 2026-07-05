@@ -1,0 +1,22 @@
+{
+  "input_records": 20,
+  "generated_final_images": 12,
+  "collected_images": 10,
+  "target_images": 10,
+  "target_met": true,
+  "routes": {
+    "skip": 8,
+    "dual": 4,
+    "global": 4,
+    "local": 4
+  },
+  "passed": 18,
+  "generation_failed": 0,
+  "router_failed": 0,
+  "elapsed_seconds": 595,
+  "gpu_memory_min_mib": 15,
+  "gpu_memory_max_mib": 36946,
+  "images_dir": "/media/data/zhangjingyi/ReflectVPR/tmp/qwen3vl4b_local_10/images",
+  "contact_sheet": "/media/data/zhangjingyi/ReflectVPR/tmp/qwen3vl4b_local_10/original_vs_generated.jpg",
+  "comparison_pairs": 10
+}

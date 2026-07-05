@@ -1,0 +1,22 @@
+# 字节码文件
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 虚拟环境
+venv/
+.venv/
+env/
+
+# IDE 配置
+.vscode/
+.idea/
+
+# 环境变量敏感信息
+.env
+
+# 
+*.pth
+*.txt
+*.log
+/media/data/zhangjingyi/ImAge/LICENSE
