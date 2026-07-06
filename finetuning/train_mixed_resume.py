@@ -339,10 +339,11 @@ class WarmupMixedGSVDataset(Dataset):
     @classmethod
     def is_tmp_pitts_csv(cls, csv_path):
         stem = csv_path.stem.strip().lower()
-        if not stem.startswith("pitts"):
-            return False
-        suffix = stem[len("pitts"):]
-        return suffix.isdigit() and 0 <= int(suffix) <= 17
+        for prefix in ("pitts30k", "pitts"):
+            if stem.startswith(prefix):
+                suffix = stem[len(prefix):]
+                return suffix.isdigit() and 0 <= int(suffix) <= 17
+        return False
 
     @classmethod
     def should_include_csv(cls, subset, csv_path, tmp_group):
