@@ -1,0 +1,110 @@
+Avoid OOM checklist for large ImAge/SFXL/tmp runs
+
+1. Dry-run first
+
+Run a short check before nohup/formal training. This should build the dataset,
+load the checkpoint, touch the dataloader, and exit quickly.
+
+Example:
+
+cd /media/data/zhangjingyi/ImAge
+
+CUDA_VISIBLE_DEVICES=0 timeout 300 python -u finetuning/train_mixed_resume.py \
+  --aggregator image \
+  --resume_author /media/data/zhangjingyi/ImAge/module/ImAge_GSV.pth \
+  --training_dataset /data_nvme/zhangjingyi/Gsv_reflect/mixgsv \
+  --training_subsets default tmp \
+  --tmp_group pitts \
+  --eval_datasets_folder /media/data1/chenshunpeng1/datasets \
+  --eval_dataset_names Msls_740 pitts30k \
+  --train_batch_size 120 \
+  --train_image_size 322 322 \
+  --resize 322 322 \
+  --lr 5e-6 \
+  --epochs_num 1 \
+  --num_workers 0 \
+  --fast_debug_batches \
+  --save_dir dryrun_avoid_oom
+
+2. Formal run: do not default to num_workers=4
+
+Use --num_workers 0, 1, or 2 for big SFXL/tmp jobs. Start with 0 or 1 if the
+machine has other users, Docker builds, or compile jobs.
+
+Example:
+
+cd /media/data/zhangjingyi/ImAge
+
+CUDA_VISIBLE_DEVICES=0 nohup python -u finetuning/train_mixed_resume.py \
+  --aggregator image \
+  --resume_author /media/data/zhangjingyi/ImAge/module/ImAge_GSV.pth \
+  --training_dataset /data_nvme/zhangjingyi/Gsv_reflect/mixgsv \
+  --training_subsets default tmp \
+  --tmp_group pitts \
+  --eval_datasets_folder /media/data1/chenshunpeng1/datasets \
+  --eval_dataset_names Msls_740 pitts30k \
+  --train_batch_size 120 \
+  --train_image_size 322 322 \
+  --resize 322 322 \
+  --lr 5e-6 \
+  --epochs_num 20 \
+  --num_workers 1 \
+  --save_dir image_mixed_resume_sfxl_pitts \
+  > log_image_mixed_resume_sfxl_pitts_safe.txt 2>&1 &
+
+3. Add a memory limit with systemd-run
+
+Use systemd-run --scope so the training process is killed inside its own scope
+if it exceeds the memory budget. This helps prevent sshd/systemd-logind from
+being dragged down by a global OOM.
+
+Example with 120G limit:
+
+cd /media/data/zhangjingyi/ImAge
+
+CUDA_VISIBLE_DEVICES=0 systemd-run --user --scope \
+  -p MemoryMax=120G \
+  -p MemoryHigh=100G \
+  python -u finetuning/train_mixed_resume.py \
+    --aggregator image \
+    --resume_author /media/data/zhangjingyi/ImAge/module/ImAge_GSV.pth \
+    --training_dataset /data_nvme/zhangjingyi/Gsv_reflect/mixgsv \
+    --training_subsets default tmp \
+    --tmp_group pitts \
+    --eval_datasets_folder /media/data1/chenshunpeng1/datasets \
+    --eval_dataset_names Msls_740 pitts30k \
+    --train_batch_size 120 \
+    --train_image_size 322 322 \
+    --resize 322 322 \
+    --lr 5e-6 \
+    --epochs_num 20 \
+    --num_workers 1 \
+    --save_dir image_mixed_resume_sfxl_pitts_safe
+
+If --user is unavailable or the system needs root-level scopes, use:
+
+sudo systemd-run --scope \
+  -p MemoryMax=120G \
+  -p MemoryHigh=100G \
+  env CUDA_VISIBLE_DEVICES=0 python -u finetuning/train_mixed_resume.py ...
+
+4. Preflight checks before any huge run
+
+Check available memory:
+
+awk '/MemAvailable/ {printf "MemAvailable: %.1f GB\n", $2/1024/1024}' /proc/meminfo
+
+Check risky concurrent jobs:
+
+ps -ef | grep -Ei 'docker build|buildkit|cicc|cc1plus|train_mixed_resume|train.py' | grep -v grep
+
+Check the wait PID is really the expected training process:
+
+ps -p <WAIT_PID> -o pid,ppid,stat,etime,cmd
+
+Check tmp group size:
+
+find /data_nvme/zhangjingyi/Gsv_reflect/mixgsv/Dataframes/tmp -maxdepth 1 -name '*.csv' | wc -l
+find /data_nvme/zhangjingyi/Gsv_reflect/mixgsv/Dataframes/tmp -maxdepth 1 -name 'Pitts*.csv' | wc -l
+
+Avoid tmp_group=all unless it is explicitly intended and the machine is idle.
