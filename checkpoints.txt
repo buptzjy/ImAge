@@ -1,0 +1,236 @@
+ImAge / SALAD / BoQ / EDTFormer checkpoints mapping
+Generated: 2026-07-07
+
+说明:
+- “已确认”表示文件已在当前机器 /media/data/zhangjingyi 下用 ls/find 查到。
+- “待远端确认”表示当前机器没有该路径，应该在对应机器 125/126 上再查。
+- 多个实验都叫 best_model.pth，下面保留完整绝对路径，避免重名混淆。
+
+
+1. BoQ / 121gpu0 / 测试 SFXL 子集
+描述:
+  ImAge在121gpu0测试121:
+  /media/data/zhangjingyi/BoQ/logs/dinov2_vitb14/version_5/checkpoints/epoch[18]_Msls740_R@1[0.9446]_R@5[0.9757].ckpt
+  测 sfxl 子集。
+
+最终权重:
+  /media/data/zhangjingyi/BoQ/logs/dinov2_vitb14/version_5/checkpoints/epoch[18]_Msls740_R@1[0.9446]_R@5[0.9757].ckpt
+
+状态:
+  已确认，约 601M。
+
+
+2. ImAge 作者权重 / 121 / 测试 SFXL 子集
+描述:
+  作者权重测试 SFXL 子集。
+  log_eval_ImAge0707.txt 中 2026-07-07 12:10:42 开始:
+  exp1_author_ImAge_GSV_sfxl_sage_0707
+  resume=/media/data/zhangjingyi/ImAge/module/ImAge_GSV.pth
+  eval_dataset_names=['sf_xl_v1', 'sf_xl_occlusion', 'sf_xl_night']
+
+最终权重:
+  /media/data/zhangjingyi/ImAge/module/ImAge_GSV.pth
+
+相关日志:
+  /media/data/zhangjingyi/ImAge_v2/log_eval_ImAge0707.txt
+
+状态:
+  已确认，约 547M。
+
+
+3. EDTFormer 作者权重 / 125 / 测试 SFXLsvox 子集
+描述:
+  125: EDTFormer 作者权重测试 SFXLsvox 子集。
+
+最终权重候选:
+  /media/data/zhangjingyi/ImAge/module/EDTformer.pth
+
+相关测试目录候选:
+  /media/data/zhangjingyi/EDTformer/test/EDTformer_best_model_sfxlv1
+  /media/data/zhangjingyi/EDTformer/test/EDTformer_best_model_table2_sf_xl_occlusion
+  /media/data/zhangjingyi/EDTformer/test/EDTformer_best_model_table2_sf_xl_night
+  /media/data/zhangjingyi/EDTformer/test/EDTformer_best_model_table2_svox_rain
+  /media/data/zhangjingyi/EDTformer/test/EDTformer_best_model_table2_svox_sun
+  /media/data/zhangjingyi/EDTformer/test/EDTformer_best_model_table2_svox_snow
+  /media/data/zhangjingyi/EDTformer/test/EDTformer_best_model_table2_svox_overcast
+  /media/data/zhangjingyi/EDTformer/test/EDTformer_best_model_table2_svox_night
+
+状态:
+  权重已确认，约 450M。
+  “125 上测试 SFXLsvox 子集”的具体远端结果路径待 125 机器确认。
+
+
+4. SALAD 作者/当前权重 / 121 / 0706 / SFXL / Pitts=92.6, MSLS=93.0
+描述:
+  salad 用 121 的:
+  /media/data/zhangjingyi/ImAge/logs/salad_mixed_resume_tmp_pitts/2026-07-06_02-14-00/best_model.pth
+  0706, sfxl, 92.6 / 93.0
+  best: Pitts=92.6, MSLS=93.0, mean=92.8
+
+最终权重:
+  /media/data/zhangjingyi/ImAge/logs/salad_mixed_resume_tmp_pitts/2026-07-06_02-14-00/best_model.pth
+
+同目录辅助文件:
+  /media/data/zhangjingyi/ImAge/logs/salad_mixed_resume_tmp_pitts/2026-07-06_02-14-00/info.log
+  /media/data/zhangjingyi/ImAge/logs/salad_mixed_resume_tmp_pitts/2026-07-06_02-14-00/debug.log
+  /media/data/zhangjingyi/ImAge/logs/salad_mixed_resume_tmp_pitts/2026-07-06_02-14-00/last_model.pth
+
+状态:
+  已确认，best_model.pth 约 455M。
+
+
+5. SALAD / 0705 / 混 SFXL + Pitts + MSLS238 / 92.7 + 92.4
+描述:
+  0705, 混 sfxl+pitts+msls238: 92.7 + 92.4
+  /media/data/zhangjingyi/ImAge/logs/salad_mixed_resume_tmp_all/2026-07-05_22-04-07/best_model.pth
+
+最终权重:
+  /media/data/zhangjingyi/ImAge/logs/salad_mixed_resume_tmp_all/2026-07-05_22-04-07/best_model.pth
+
+同目录辅助文件:
+  /media/data/zhangjingyi/ImAge/logs/salad_mixed_resume_tmp_all/2026-07-05_22-04-07/info.log
+  /media/data/zhangjingyi/ImAge/logs/salad_mixed_resume_tmp_all/2026-07-05_22-04-07/debug.log
+  /media/data/zhangjingyi/ImAge/logs/salad_mixed_resume_tmp_all/2026-07-05_22-04-07/last_model.pth
+
+状态:
+  已确认，best_model.pth 约 455M。
+
+
+6. SALAD / 121 / 混训 epoch05 / meanR1=0.9243
+描述:
+  121:
+  混训 epoch05:
+  salad_(05)_meanR1[0.9243]_pittsR1[0.9228]_mslsR1[0.9257].ckpt
+
+最终权重:
+  /media/data/zhangjingyi/salad/logs/SALAD_GSVresume_V2_0622_warmup3/checkpoints/salad_(05)_meanR1[0.9243]_pittsR1[0.9228]_mslsR1[0.9257].ckpt
+
+状态:
+  已确认，约 336M。
+
+
+7. SALAD / 126 / 0630 salad mixGSV 日志
+描述:
+  126:
+  /media/data3/zhangjy/ImAge/log_0630salad_mixGSV_.txt
+  但好像是真实数据训练出来的。
+
+最终路径:
+  /media/data3/zhangjy/ImAge/log_0630salad_mixGSV_.txt
+
+状态:
+  当前机器未找到该路径。
+  待 126 机器确认；这条目前是日志路径，不是权重路径。
+
+
+8. ImAge / 121 / 0622 warmup / 五轮 warmup 一轮混合 / 238 分辨率 / 93.9 + 93.1
+描述:
+  121:
+  五轮 warmup 一轮混合就 SOTA: 困难数据，238 分辨率。
+  93.9 + 93.1
+  media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0622_warmup/2026-06-22_18-47-24/best_pitts30k_model.pth
+
+最终权重:
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0622_warmup/2026-06-22_18-47-24/best_pitts30k_model.pth
+
+同目录可选权重:
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0622_warmup/2026-06-22_18-47-24/best_msls_model.pth
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0622_warmup/2026-06-22_18-47-24/Epoch_5_Retrieval_R1_93.90_R5_97.07_R10_97.92_model.pth
+
+状态:
+  已确认，best_pitts30k_model.pth 约 547M。
+
+
+9. ImAge / 121 / 0629 exp1 / 延续 V1 策略 / 322 分辨率 / 94.1 + 93.2
+描述:
+  0629 延续 v1 策略:
+  exp1 改成 322 分辨，94.1 + 93.2
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0629exp1_reflect_train322/2026-06-29_10-37-42/
+
+最终权重:
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0629exp1_reflect_train322/2026-06-29_10-37-42/best_pitts30k_model.pth
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0629exp1_reflect_train322/2026-06-29_10-37-42/best_msls_model.pth
+
+对应最佳 epoch 文件:
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0629exp1_reflect_train322/2026-06-29_10-37-42/Epoch_5_Retrieval_R1_94.13_R5_97.21_R10_97.92_model.pth
+
+相关日志:
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0629exp1_reflect_train322/2026-06-29_10-37-42/log.txt
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0629exp1_reflect_train322/2026-06-29_10-37-42/log_eval_exp10629.txt
+
+状态:
+  已确认，best_pitts30k_model.pth / best_msls_model.pth 均约 547M。
+
+
+10. ImAge / 121 / 0630 exp1 / 加入 500M Pitts 和 10G MSLS 训练 / 94.0 + 93.8
+描述:
+  0630 加入 500Mpitts 和 10Gmsls 训练: 94 + 93.8
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0630exp1_mixgsv_rebuilt_train322/2026-06-30_11-56-28/
+
+最终权重:
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0630exp1_mixgsv_rebuilt_train322/2026-06-30_11-56-28/best_model.pth
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0630exp1_mixgsv_rebuilt_train322/2026-06-30_11-56-28/best_pitts30k_model.pth
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0630exp1_mixgsv_rebuilt_train322/2026-06-30_11-56-28/best_msls_model.pth
+
+对应最佳 epoch 文件:
+  best_model.pth 对应:
+    /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0630exp1_mixgsv_rebuilt_train322/2026-06-30_11-56-28/Epoch_7_Retrieval_R1_93.96_R5_97.24_R10_98.03_model.pth
+  best_pitts30k_model.pth 对应:
+    /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0630exp1_mixgsv_rebuilt_train322/2026-06-30_11-56-28/Epoch_8_Retrieval_R1_94.06_R5_97.26_R10_98.08_model.pth
+  best_msls_model.pth 对应:
+    /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0630exp1_mixgsv_rebuilt_train322/2026-06-30_11-56-28/Epoch_10_Retrieval_R1_93.94_R5_97.18_R10_97.95_model.pth
+
+相关日志:
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0630exp1_mixgsv_rebuilt_train322/2026-06-30_11-56-28/log.txt
+
+状态:
+  已确认，三个 best 权重均约 547M。
+
+
+11. ImAge / 121 / 0703-0704 / 只混入 SFXL / 93.9 + 92.7
+描述:
+  0703 只混入 sfxl: 93.9 + 92.7
+  /media/data/zhangjingyi/ImAge/logs/image_mixed_resume_sfxl_tmp/2026-07-04_18-30-14/best_model.pth
+
+最终权重:
+  /media/data/zhangjingyi/ImAge/logs/image_mixed_resume_sfxl_tmp/2026-07-04_18-30-14/best_model.pth
+
+同目录辅助文件:
+  /media/data/zhangjingyi/ImAge/logs/image_mixed_resume_sfxl_tmp/2026-07-04_18-30-14/info.log
+  /media/data/zhangjingyi/ImAge/logs/image_mixed_resume_sfxl_tmp/2026-07-04_18-30-14/debug.log
+  /media/data/zhangjingyi/ImAge/logs/image_mixed_resume_sfxl_tmp/2026-07-04_18-30-14/last_model.pth
+
+状态:
+  已确认，best_model.pth 约 547M。
+
+
+12. ImAge / 121 / 0706 / SFXL + MSLS + Pitts / 93.9 + 92.7
+描述:
+  0706: SFXL + msls + pitts: 93.9 + 92.7
+  用户记录中给出的路径仍是:
+  /media/data/zhangjingyi/ImAge/logs/image_mixed_resume_sfxl_tmp/2026-07-04_18-30-14/best_model.pth
+
+最终权重:
+  /media/data/zhangjingyi/ImAge/logs/image_mixed_resume_sfxl_tmp/2026-07-04_18-30-14/best_model.pth
+
+状态:
+  已确认，约 547M。
+  注意: 该路径目录时间是 2026-07-04_18-30-14，和描述里的“0706”不完全一致。
+  如果 0706 另有单独训练目录，需要再按日志名/时间查一次。
+
+
+简版传输清单:
+  /media/data/zhangjingyi/BoQ/logs/dinov2_vitb14/version_5/checkpoints/epoch[18]_Msls740_R@1[0.9446]_R@5[0.9757].ckpt
+  /media/data/zhangjingyi/ImAge/module/ImAge_GSV.pth
+  /media/data/zhangjingyi/ImAge/module/EDTformer.pth
+  /media/data/zhangjingyi/ImAge/logs/salad_mixed_resume_tmp_pitts/2026-07-06_02-14-00/best_model.pth
+  /media/data/zhangjingyi/ImAge/logs/salad_mixed_resume_tmp_all/2026-07-05_22-04-07/best_model.pth
+  /media/data/zhangjingyi/salad/logs/SALAD_GSVresume_V2_0622_warmup3/checkpoints/salad_(05)_meanR1[0.9243]_pittsR1[0.9228]_mslsR1[0.9257].ckpt
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0622_warmup/2026-06-22_18-47-24/best_pitts30k_model.pth
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0629exp1_reflect_train322/2026-06-29_10-37-42/best_pitts30k_model.pth
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0629exp1_reflect_train322/2026-06-29_10-37-42/best_msls_model.pth
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0630exp1_mixgsv_rebuilt_train322/2026-06-30_11-56-28/best_model.pth
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0630exp1_mixgsv_rebuilt_train322/2026-06-30_11-56-28/best_pitts30k_model.pth
+  /media/data/zhangjingyi/ImAge_v2/logs/GSVresume_V1_0630exp1_mixgsv_rebuilt_train322/2026-06-30_11-56-28/best_msls_model.pth
+  /media/data/zhangjingyi/ImAge/logs/image_mixed_resume_sfxl_tmp/2026-07-04_18-30-14/best_model.pth
+
