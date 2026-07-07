@@ -215,28 +215,65 @@ def test_efficient_ram_usage(args, eval_ds, model, test_method="hard_resize", pc
         best_distances = np.full((query_vectors_num, search_k), np.inf, dtype=np.float32)
         best_predictions = np.full((query_vectors_num, search_k), invalid_index, dtype=np.int64)
 
+        database_chunk = np.empty((chunk_size, args.features_dim), dtype=np.float32)
+        chunk_count = 0
+        chunk_start = 0
+
         eval_ds.test_method = "hard_resize"
         database_subset_ds = Subset(eval_ds, list(range(eval_ds.database_num)))
         database_dataloader = DataLoader(
             dataset=database_subset_ds,
             num_workers=args.num_workers,
-            batch_size=chunk_size,
+            batch_size=args.infer_batch_size,
             pin_memory=(args.device == "cuda"),
         )
 
+        def search_chunk(features, start_index):
+            chunk_index = faiss.IndexFlatL2(args.features_dim)
+            chunk_index.add(np.ascontiguousarray(features))
+            chunk_distances, chunk_predictions = chunk_index.search(
+                queries_features, min(search_k, len(features))
+            )
+            chunk_predictions = chunk_predictions + start_index
+            if chunk_predictions.shape[1] < search_k:
+                pad = search_k - chunk_predictions.shape[1]
+                chunk_distances = np.pad(chunk_distances, ((0, 0), (0, pad)), constant_values=np.inf)
+                chunk_predictions = np.pad(
+                    chunk_predictions,
+                    ((0, 0), (0, pad)),
+                    constant_values=invalid_index,
+                )
+            return chunk_distances, chunk_predictions
+
         logging.debug("Extracting database features and performing exact chunked retrieval")
-        for inputs, indices in tqdm(database_dataloader, ncols=100, desc="Database chunks"):
+        for inputs, _ in tqdm(database_dataloader, ncols=100, desc="Database"):
             features = model(inputs.to(args.device))
             features = features.cpu().numpy()
             if pca is not None:
                 features = pca.transform(features)
-            database_chunk_features = np.asarray(features, dtype=np.float32)
+            features = np.asarray(features, dtype=np.float32)
 
-            chunk_index = faiss.IndexFlatL2(args.features_dim)
-            chunk_index.add(database_chunk_features)
-            chunk_distances, chunk_predictions = chunk_index.search(queries_features, search_k)
-            chunk_predictions = chunk_predictions + int(indices[0])
+            offset = 0
+            while offset < len(features):
+                take = min(chunk_size - chunk_count, len(features) - offset)
+                database_chunk[chunk_count:chunk_count + take] = features[offset:offset + take]
+                chunk_count += take
+                offset += take
 
+                if chunk_count == chunk_size:
+                    chunk_distances, chunk_predictions = search_chunk(database_chunk, chunk_start)
+                    best_distances, best_predictions = _merge_exact_topk(
+                        best_distances,
+                        best_predictions,
+                        chunk_distances,
+                        chunk_predictions,
+                        search_k,
+                    )
+                    chunk_start += chunk_count
+                    chunk_count = 0
+
+        if chunk_count:
+            chunk_distances, chunk_predictions = search_chunk(database_chunk[:chunk_count], chunk_start)
             best_distances, best_predictions = _merge_exact_topk(
                 best_distances,
                 best_predictions,

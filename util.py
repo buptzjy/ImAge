@@ -17,15 +17,55 @@ def resume_model(args, model):
     checkpoint = torch.load(args.resume, map_location=args.device, weights_only=False)
     if 'model_state_dict' in checkpoint:
         state_dict = checkpoint['model_state_dict']
+    elif isinstance(checkpoint, dict) and "state_dict" in checkpoint:
+        state_dict = checkpoint["state_dict"]
     else:
         # The pre-trained models that we provide in the README do not have 'state_dict' in the keys as
         # the checkpoint is directly the state dict
         state_dict = checkpoint
-    # if the model contains the prefix "module" which is appendend by
-    # DataParallel, remove it to avoid errors when loading dict
-    if list(state_dict.keys())[0].startswith('module'):
-        state_dict = OrderedDict({k.replace('module.', ''): v for (k, v) in state_dict.items()})
-    model.load_state_dict(state_dict)
+    model_state = model.state_dict()
+    remapped_state = OrderedDict()
+    remapped_count = 0
+    for key, value in state_dict.items():
+        candidates = [key]
+        if key.startswith("module."):
+            candidates.append(key[len("module."):])
+        else:
+            candidates.append("module." + key)
+        if key.startswith("backbone.dino."):
+            tail = key[len("backbone.dino."):]
+            candidates.append("backbone." + tail)
+            candidates.append("module.backbone." + tail)
+        if key.startswith("module.backbone.dino."):
+            tail = key[len("module.backbone.dino."):]
+            candidates.append("backbone." + tail)
+            candidates.append("module.backbone." + tail)
+        if key.startswith("backbone.model."):
+            tail = key[len("backbone.model."):]
+            candidates.append("backbone." + tail)
+            candidates.append("module.backbone." + tail)
+        if key.startswith("module.backbone.model."):
+            tail = key[len("module.backbone.model."):]
+            candidates.append("backbone." + tail)
+            candidates.append("module.backbone." + tail)
+
+        target_key = None
+        for candidate in candidates:
+            if candidate in model_state and model_state[candidate].shape == value.shape:
+                target_key = candidate
+                break
+        if target_key is None:
+            target_key = key
+        elif target_key != key:
+            remapped_count += 1
+        remapped_state[target_key] = value
+    if remapped_count:
+        logging.info(f"Remapped {remapped_count} checkpoint keys to match the current model")
+    missing, unexpected = model.load_state_dict(remapped_state, strict=False)
+    logging.info(
+        f"Loaded weights from {args.resume}; "
+        f"missing={len(missing)}, unexpected={len(unexpected)}"
+    )
     return model
 
 def resume_train(args, model, optimizer=None, strict=False):

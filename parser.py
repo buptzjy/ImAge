@@ -29,6 +29,8 @@ def parse_arguments():
     parser.add_argument("--freeze_te", type=int, default=None, choices=list(range(0, 11)))
     parser.add_argument("--trunc_te", type=int, default=None, choices=list(range(0, 11)))
     parser.add_argument("--num_learnable_aggregation_tokens", type=int, default=8)
+    parser.add_argument("--num_register_tokens", type=int, default=4,
+                        help="Number of DINOv2 register tokens. Use 0 for SALAD/BoQ checkpoints trained without registers.")
     parser.add_argument('--fc_output_dim', type=int, default=None,
                         help="Output dimension of fully connected layer. If None, don't use a fully connected layer.")
     # Initialization parameters
