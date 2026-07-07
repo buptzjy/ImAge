@@ -75,8 +75,21 @@ def get_aggregator(args):
         aggregator = SALAD(num_channels=768)
         args.features_dim = 8448
     elif args.aggregator == "boq":
-        aggregator = BoQ(in_channels=768,proj_channels=384,num_layers=2,num_queries=64,row_dim=32)
-        args.features_dim = 12288
+        boq_proj_channels = getattr(args, "boq_proj_channels", 384)
+        boq_output_dim = getattr(args, "boq_output_dim", 12288)
+        if boq_output_dim % boq_proj_channels != 0:
+            raise ValueError(
+                f"boq_output_dim ({boq_output_dim}) must be divisible by "
+                f"boq_proj_channels ({boq_proj_channels})"
+            )
+        aggregator = BoQ(
+            in_channels=768,
+            proj_channels=boq_proj_channels,
+            num_layers=2,
+            num_queries=64,
+            row_dim=boq_output_dim // boq_proj_channels,
+        )
+        args.features_dim = boq_output_dim
     return aggregator
 
 def get_backbone(args):

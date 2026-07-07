@@ -16,6 +16,8 @@ INFER_BATCH_SIZE="${INFER_BATCH_SIZE:-64}"
 DATABASE_CHUNK_SIZE="${DATABASE_CHUNK_SIZE:-4096}"
 MEMORY_MIN_AVAILABLE_KB="${MEMORY_MIN_AVAILABLE_KB:-$((30 * 1024 * 1024))}"
 MEMORY_CHECK_INTERVAL_SECONDS="${MEMORY_CHECK_INTERVAL_SECONDS:-60}"
+BOQ_PROJ_CHANNELS="${BOQ_PROJ_CHANNELS:-384}"
+BOQ_OUTPUT_DIM="${BOQ_OUTPUT_DIM:-12288}"
 
 IMAGE_RESUME="${IMAGE_RESUME:-/media/data/zhangjingyi/ImAge/module/ImAge_GSV.pth}"
 BOQ_RESUME="${BOQ_RESUME:-/media/data/zhangjingyi/ImAge/module/dinov2_12288.pth}"
@@ -164,6 +166,8 @@ run_baseline() {
         --freeze_te=10 \
         --num_learnable_aggregation_tokens=8 \
         --num_register_tokens=0 \
+        --boq_proj_channels="${BOQ_PROJ_CHANNELS}" \
+        --boq_output_dim="${BOQ_OUTPUT_DIM}" \
         --infer_batch_size="${INFER_BATCH_SIZE}" \
         --num_workers=0 \
         --recall_values 1 5 10 \
